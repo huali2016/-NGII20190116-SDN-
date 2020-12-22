@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>首页 - 基于SDN的故障恢复系统</title>
+    <base href="/">
+    <link rel="icon" href="statics/images/favicon.ico" type="image/ico">
+    <meta name="author" content="yinqi">
+    <link href="statics/css/bootstrap.min.css" rel="stylesheet">
+    <link href="statics/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="statics/css/style.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+        #mynetwork {
+            width: 1640px;
+            height: 700px;
+            border: 1px solid lightgray;
+            margin-left: 0px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside class="lyear-layout-sidebar">
+
+            <!-- logo -->
+            <div id="logo" class="sidebar-header">
+                <a style="font-size: 23px"><img src="statics/images/title.png" style="width: 50px;height: 50px"/>故障链路检测与恢复系统</a>
+            </div>
+            <div class="lyear-layout-sidebar-scroll">
+
+                <nav class="sidebar-main">
+                    <ul class="nav nav-drawer">
+                        <li class="nav-item active"><a href="index">后台首页</a></li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)">设备信息</a>
+                            <ul class="nav nav-subnav">
+                                <li><a href="pc">主机信息</a></li>
+                                <li><a href="switch">交换机信息</a></li>
+                                <li><a href="link">链路信息</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)">故障信息</a>
+                            <ul class="nav nav-subnav">
+                                <li><a href="errornode">故障链路</a></li>
+                                <!--li><a href="lyear_forms_radio.html">备用2</a></li-->
+                            </ul>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)">系统日志</a>
+                            <ul class="nav nav-subnav">
+                                <li><a href="rizhi">链路故障日志</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)">新链路</a>
+                            <ul class="nav nav-subnav">
+                                <li><a href="testview">新链路</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+
+        </aside>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <header class="lyear-layout-header">
+
+            <nav class="navbar navbar-default">
+                <div class="topbar">
+
+                    <div class="topbar-left">
+                        <div class="lyear-aside-toggler">
+                            <span class="lyear-toggler-bar"></span>
+                            <span class="lyear-toggler-bar"></span>
+                            <span class="lyear-toggler-bar"></span>
+                        </div>
+                        <span class="navbar-page-title">网络拓扑信息</span>
+                    </div>
+
+                    <ul class="topbar-right">
+                        <!--li class="dropdown dropdown-profile">
+                            <a href="javascript:void(0)" data-toggle="dropdown">
+                                <img class="img-avatar img-avatar-48 m-r-10" src="images/users/avatar.jpg" alt="笔下光年"/>
+                                <span>笔下光年 <span class="caret"></span></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="lyear_pages_profile.html"><i class="mdi mdi-account"></i> 个人信息</a></li>
+                                <li><a href="lyear_pages_edit_pwd.html"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
+                                </li>
+                                <li><a href="javascript:void(0)"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
+                                <li class="divider"></li>
+                                <li><a href="lyear_pages_login.html"><i class="mdi mdi-logout-variant"></i> 退出登录</a>
+                                </li>
+                            </ul>
+                        </li-->
+                        <!--切换主题配色-->
+                        <li class="dropdown dropdown-skin">
+                            <span id="time">
+                                 <script>
+                                     setInterval("document.getElementById('time').innerHTML=new Date().toLocaleString();", 1000);
+                                </script>
+                            </span>
+                            <span data-toggle="dropdown">
+                                <img src="statics/images/color.png" style="height: 30px;width: 30px"></img>
+                                <button style="background: white;border: white">主题切换</button>
+                            </span>
+                            <ul class="dropdown-menu dropdown-menu-right" data-stopPropagation="true">
+                                <li class="drop-title"><p>主题</p></li>
+                                <li class="drop-skin-li clearfix">
+                  <span class="inverse">
+                    <input type="radio" name="site_theme" value="default" id="site_theme_1" checked>
+                    <label for="site_theme_1"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="site_theme" value="dark" id="site_theme_2">
+                    <label for="site_theme_2"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="site_theme" value="translucent" id="site_theme_3">
+                    <label for="site_theme_3"></label>
+                  </span>
+                                </li>
+                                <li class="drop-title"><p>LOGO</p></li>
+                                <li class="drop-skin-li clearfix">
+                  <span class="inverse">
+                    <input type="radio" name="logo_bg" value="default" id="logo_bg_1" checked>
+                    <label for="logo_bg_1"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="logo_bg" value="color_2" id="logo_bg_2">
+                    <label for="logo_bg_2"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="logo_bg" value="color_3" id="logo_bg_3">
+                    <label for="logo_bg_3"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="logo_bg" value="color_4" id="logo_bg_4">
+                    <label for="logo_bg_4"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="logo_bg" value="color_5" id="logo_bg_5">
+                    <label for="logo_bg_5"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="logo_bg" value="color_6" id="logo_bg_6">
+                    <label for="logo_bg_6"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="logo_bg" value="color_7" id="logo_bg_7">
+                    <label for="logo_bg_7"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="logo_bg" value="color_8" id="logo_bg_8">
+                    <label for="logo_bg_8"></label>
+                  </span>
+                                </li>
+                                <li class="drop-title"><p>头部</p></li>
+                                <li class="drop-skin-li clearfix">
+                  <span class="inverse">
+                    <input type="radio" name="header_bg" value="default" id="header_bg_1" checked>
+                    <label for="header_bg_1"></label>                      
+                  </span>
+                                    <span>
+                    <input type="radio" name="header_bg" value="color_2" id="header_bg_2">
+                    <label for="header_bg_2"></label>                      
+                  </span>
+                                    <span>
+                    <input type="radio" name="header_bg" value="color_3" id="header_bg_3">
+                    <label for="header_bg_3"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="header_bg" value="color_4" id="header_bg_4">
+                    <label for="header_bg_4"></label>                      
+                  </span>
+                                    <span>
+                    <input type="radio" name="header_bg" value="color_5" id="header_bg_5">
+                    <label for="header_bg_5"></label>                      
+                  </span>
+                                    <span>
+                    <input type="radio" name="header_bg" value="color_6" id="header_bg_6">
+                    <label for="header_bg_6"></label>                      
+                  </span>
+                                    <span>
+                    <input type="radio" name="header_bg" value="color_7" id="header_bg_7">
+                    <label for="header_bg_7"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="header_bg" value="color_8" id="header_bg_8">
+                    <label for="header_bg_8"></label>
+                  </span>
+                                </li>
+                                <li class="drop-title"><p>侧边栏</p></li>
+                                <li class="drop-skin-li clearfix">
+                  <span class="inverse">
+                    <input type="radio" name="sidebar_bg" value="default" id="sidebar_bg_1" checked>
+                    <label for="sidebar_bg_1"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="sidebar_bg" value="color_2" id="sidebar_bg_2">
+                    <label for="sidebar_bg_2"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="sidebar_bg" value="color_3" id="sidebar_bg_3">
+                    <label for="sidebar_bg_3"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="sidebar_bg" value="color_4" id="sidebar_bg_4">
+                    <label for="sidebar_bg_4"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="sidebar_bg" value="color_5" id="sidebar_bg_5">
+                    <label for="sidebar_bg_5"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="sidebar_bg" value="color_6" id="sidebar_bg_6">
+                    <label for="sidebar_bg_6"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="sidebar_bg" value="color_7" id="sidebar_bg_7">
+                    <label for="sidebar_bg_7"></label>
+                  </span>
+                                    <span>
+                    <input type="radio" name="sidebar_bg" value="color_8" id="sidebar_bg_8">
+                    <label for="sidebar_bg_8"></label>
+                  </span>
+                                </li>
+                            </ul>
+                        </li>
+                        <!--切换主题配色-->
+                    </ul>
+
+                </div>
+            </nav>
+
+        </header>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card bg-primary">
+                            <div class="card-body clearfix">
+                                <p style="margin-left: auto">连接状态</p>
+                                <p style="margin-left: auto;font-size: 20px" id="p1">已连接</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card bg-danger">
+                            <div class="card-body clearfix">
+                                <p style="margin-left: auto">主机数量</p>
+                                <p style="margin-left: auto;font-size: 20px" id="p2">未获得</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card bg-success">
+                            <div class="card-body clearfix">
+                                <p style="margin-left: auto">交换机机数量</p>
+                                <p style="margin-left: auto;font-size: 20px" id="p3">未获得</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card bg-purple">
+                            <div class="card-body clearfix">
+                                <p style="margin-left: auto">故障链路</p>
+                                <p style="margin-left: auto;font-size: 20px" id="p4">未获得</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="index"><img src="statics/images/shuaxin.png"
+                                                             style="width: 45px;height: 38px;margin-left: 1580px;"></a>
+                <a href="testview"><img src="statics/images/repaire.png"
+                                  style="height: 38px;width: 45px;margin-left: 1520px;margin-top: -58px"></a>
+                <div class="row div2" id="mynetwork" style="border: 0px">
+                </div>
+                <script type="text/javascript">
+                    // create an array with nodes
+
+                    //从服务器获得节点信息
+                    var linkNode = {{ node|safe }};
+                    //从服务器获得链接源头信息
+                    var linkNodeSource = {{ link_source_id|safe  }};
+                    //从服务器获得链接目地信息
+                    var linkNodeDest = {{ link_destination_id|safe }};
+                    //从服务器获得问题节点信息
+                    var errorNodes = {{ errorNode|safe }};
+                    //从服务器获得链接源端口
+                    var sourPort = {{ sourPort|safe }};
+                    //从服务器获得链接目地端口
+                    var destPort = {{ destPort|safe }};
+
+                    var redSour = {{ redSour|safe }};
+
+
+                    //后台反馈信息测试
+                    console.log(linkNode);
+                    console.log(linkNodeSource);
+                    console.log(linkNodeDest);
+                    console.log(errorNodes);
+                    console.log(sourPort);
+                    console.log(destPort);
+                    console.log(redSour);
+                    //获取各个表中数据的个数
+                    var numNode = 0;
+                    var numSour = 0;
+                    var numDest = 0;
+                    var numEPort = 0;
+                    var numRedSour = 0;
+                    for (var i1 = 0; i1 < 30; i1++) {
+                        if (linkNode[i1] != null) {
+                            numNode = numNode + 1;
+                        }
+                    }
+                    for (var i2 = 0; i2 < 30; i2++) {
+                        if (linkNodeSource[i2] != null) {
+                            numSour = numSour + 1;
+                        }
+                    }
+                    for (var i3 = 0; i3 < 30; i3++) {
+                        if (linkNodeDest[i3] != null) {
+                            numDest = numDest + 1;
+                        }
+                    }
+                    for (var ei = 0; ei < 30; ei++) {
+                        if (errorNodes[ei] != null) {
+                            numEPort = numEPort + 1;
+                        }
+                    }
+                    for (var i11 = 0; i11 < 30; i11++) {
+                        if (redSour[i11] != null) {
+                            numRedSour = numRedSour + 1;
+                        }
+                    }
+
+                    console.log(numNode);
+                    console.log(numSour);
+                    console.log(numDest);
+                    console.log(numEPort);
+                    console.log(numRedSour);
+
+                    // create an array with nodes
+
+                    var list = [];
+                    var list2 = [];
+                    for (var i = 0; ; i++) {
+                        if (linkNode[i] != null && linkNode[i] !== '0') {
+                            if (linkNode[i].length > 14) {
+                                list[i] = {
+                                    id: linkNode[i],
+                                    label: linkNode[i],
+                                    image: "statics/images/pc.png",
+                                    shape: 'image'
+                                };
+                            } else
+                                list[i] = {
+                                    id: linkNode[i],
+                                    label: linkNode[i],
+                                    image: "statics/images/switch.png",
+                                    shape: 'image'
+                                };
+
+
+                        } else
+                            break;
+                    }
+
+                    for (var k3 = 0; k3 < numSour; k3++) {
+                        for (var k4 = 0; k4 < numDest; k4++) {
+                            if (linkNodeDest[k4] === linkNodeSource[k3]) {
+                                if (linkNodeSource[k4] === linkNodeDest[k3]) {
+                                    linkNodeSource[k4] = 'error';
+                                    linkNodeDest[k4] = 'error';
+                                }
+                            }
+                        }
+                    }
+                    console.log(list);
+                    console.log(linkNodeSource);
+                    console.log(linkNodeDest);
+
+                    var sumList2 = 0;
+                    for (var k = 0; k < numSour; k++) {
+                        if (linkNode[k] != null && linkNode[k] !== '0') {
+                            for (k2 = 0; k2 < numSour; k2++) {
+                                if (linkNodeSource[k2] === linkNode[k]) {
+                                    list2[sumList2] = {from: linkNodeSource[k2], to: linkNodeDest[k2]};
+                                    sumList2 = sumList2 + 1;
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    //故障链路绘制
+                    var erSour = [];
+                    var eLink = [];
+                    var eDest = [];
+                    var erPort = [];
+                    var erDest = [];
+                    var n0 = 0;
+                    var n = 0;
+                    for (n = 0; n < numEPort; n++) {
+                        erSour[n] = errorNodes[n];
+                    }
+                    for (n = 0; n < 30; n++) {
+                        eLink[n] = sourPort[n];
+                        eDest[n] = destPort[n];
+                    }
+                    for (n1 = 0; n1 < numEPort; n1++) {
+                        for (n2 = 0; n2 < 12; n2++) {
+                            if (erSour[n1] === eLink[n2]) {
+                                erPort[n0] = eLink[n2];
+                                erDest[n0] = eDest[n2];
+                                n0 = n0 + 1;
+                            }
+                        }
+                    }
+                    for (nn = 0; nn < n0; nn++) {
+                        for (nn1 = 0; nn1 < n0; nn1++) {
+                            if (erDest[nn1] === erPort[nn]) {
+                                if (erPort[nn1] === erDest[nn]) {
+                                    erPort[nn1] = 'jump';
+                                    erDest[nn1] = 'jump';
+                                }
+                            }
+                        }
+                    }
+                    var list3 = [];
+                    for (nn = 0; nn < n0; nn++) {
+                        if (erPort[nn] !== 'jump') {
+                            list3[nn] = {
+                                from: erPort[nn].substring(0, 10),
+                                to: erDest[nn].substring(0, 10),
+                                color: {color: "rgba(250,0,0,0.6)", highlight: "red"},
+                                width: 5,
+                            };
+                        }
+
+                    }
+                    console.log(erSour);
+                    console.log(eLink);
+                    console.log(erPort);
+                    console.log(erDest);
+                    console.log(list3);
+
+
+                    var nodes = new vis.DataSet(list);
+
+                    // create an array with edges
+                    var list4 = list2.concat(list3);
+                    var edges = new vis.DataSet(list4);
+
+
+                    // create a network
+                    var container = document.getElementById('mynetwork');
+                    var data = {
+                        nodes: nodes,
+                        edges: edges,
+                    };
+                    var options = {};
+                    var network = new vis.Network(container, data, options);
+
+                    //首届面信息修改
+                    var pcNumber = 0;
+                    var switchNumber = 0;
+                    var elinkNumber = 0;
+                    for(r = 0;r<numNode;r++)
+                    {
+                        if(linkNode[r][0] === 'h')
+                        {
+                            pcNumber = pcNumber + 1;
+                        }
+                        if(linkNode[r][0] !== 'h' && linkNode[r][0] !== '0')
+                            switchNumber = switchNumber + 1;
+                    }
+                    for(r1 = 0;r1 < erPort.length;r1++)
+                    {
+                        if(erPort[r1] !== 'jump')
+                            elinkNumber = elinkNumber+1;
+                    }
+                    var obj0 = document.getElementById('p1');
+                    //alert(obj0.innerHTML);
+                    obj0.innerHTML = '已连接控制器';
+                    var obj = document.getElementById("p2");
+                    //alert(obj.innerHTML);
+                    obj.innerHTML = pcNumber;
+                    var obj1 = document.getElementById("p3");
+                    //alert(obj.innerHTML);
+                    obj1.innerHTML = switchNumber;
+                    var obj2 = document.getElementById("p4");
+                    //alert(obj.innerHTML);
+                    obj2.innerHTML = elinkNumber;
+                </script>
+
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript" src="statics/js/jquery.min.js"></script>
+<script type="text/javascript" src="statics/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="statics/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="statics/js/main.min.js"></script>
+
+
+<!--图表插件-->
+<script type="text/javascript" src="statics/js/Chart.js"></script>
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        var $dashChartBarsCnt = jQuery('.js-chartjs-bars')[0].getContext('2d'),
+            $dashChartLinesCnt = jQuery('.js-chartjs-lines')[0].getContext('2d');
+
+        var $dashChartBarsData = {
+            labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            datasets: [
+                {
+                    label: '注册用户',
+                    borderWidth: 1,
+                    borderColor: 'rgba(0,0,0,0)',
+                    backgroundColor: 'rgba(51,202,185,0.5)',
+                    hoverBackgroundColor: "rgba(51,202,185,0.7)",
+                    hoverBorderColor: "rgba(0,0,0,0)",
+                    data: [2500, 1500, 1200, 3200, 4800, 3500, 1500]
+                }
+            ]
+        };
+        var $dashChartLinesData = {
+            labels: ['2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014'],
+            datasets: [
+                {
+                    label: '交易资金',
+                    data: [20, 25, 40, 30, 45, 40, 55, 40, 48, 40, 42, 50],
+                    borderColor: '#358ed7',
+                    backgroundColor: 'rgba(53, 142, 215, 0.175)',
+                    borderWidth: 1,
+                    fill: false,
+                    lineTension: 0.5
+                }
+            ]
+        };
+
+        new Chart($dashChartBarsCnt, {
+            type: 'bar',
+            data: $dashChartBarsData
+        });
+
+        var myLineChart = new Chart($dashChartLinesCnt, {
+            type: 'line',
+            data: $dashChartLinesData,
+        });
+    });
+</script>
+</body>
+</html>
